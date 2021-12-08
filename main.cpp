@@ -8,36 +8,9 @@ using namespace std;
 
 void kickOut(vector<string> &vector1, int j, int n);
 
-long binaryToDecimal(const string &s) {
-    long n = stol(s);
-    long decimal = 0;
+long binaryToDecimal(const string &s);
 
-    for (int i = 0; i < s.length(); i++) {
-        decimal += n % 10 * pow(2, i);
-        n /= 10;
-    }
-    return decimal;
-}
-
-bool returnMostCommonBit(vector<string> &v, int index) {
-    int zeroes = 0;
-    int ones = 0;
-    for (int j = 0; j < v.size(); ++j) {
-        if (v[j][index] == '0') {
-            zeroes++;
-        }
-        if (v[j][index] == '1') {
-            ones++;
-        }
-    }
-    if (zeroes > ones) {
-        return false;
-    }
-
-    if (ones >= zeroes) {
-        return true;
-    }
-}
+bool returnMostCommonBit(vector<string> &v, int index);
 
 int main() {
     std::string myText;
@@ -52,8 +25,8 @@ int main() {
     }
 
 
-    string gammaRate = "";
-    string epsilonRate = "";
+    string gammaRate;
+    string epsilonRate;
     for (int i = 0; i < numbers[0].size(); ++i) {
         int zeroes = 0;
         int ones = 0;
@@ -121,3 +94,33 @@ void kickOut(vector<string> &vector1, int j, int n) {
     }
 }
 
+long binaryToDecimal(const string &s) {
+    long n = stol(s);
+    long decimal = 0;
+
+    for (int i = 0; i < s.length(); i++) {
+        decimal += n % 10 * pow(2, i);
+        n /= 10;
+    }
+    return decimal;
+}
+
+bool returnMostCommonBit(vector<string> &v, int index) {
+    int zeroes = 0;
+    int ones = 0;
+    for (int j = 0; j < v.size(); ++j) {
+        if (v[j][index] == '0') {
+            zeroes++;
+        }
+        if (v[j][index] == '1') {
+            ones++;
+        }
+    }
+    if (zeroes > ones) {
+        return false;
+    }
+
+    if (ones >= zeroes) {
+        return true;
+    }
+}
