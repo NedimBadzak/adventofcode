@@ -39,17 +39,41 @@ fun main(args: Array<String>) {
         matricePogadjalica.add(pogadjalica);
     }
 
+    // Part 1
     var rezultat = 0;
-    for (l in 0 until firstLine.size) {
+//    for (l in 0 until firstLine.size) {
+//        for (i in 0 until matrice.size) {
+//            for (j in 0 until matrice[i].size) {
+//                for (k in 0 until matrice[i][j].size) {
+//                    if (matrice[i][j][k] == firstLine[l]) {
+//                        matricePogadjalica[i][j][k] = true;
+//                        if (provjeriRed(matricePogadjalica, i, j) != -1) {
+//                            rezultat = saberiMatricu(matricePogadjalica, i, matrice) * firstLine[l].toInt()
+//                            println("Part 1 $rezultat")
+//                            return;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+    //Part 2
+    val zavrseneList: MutableList<Boolean> = MutableList(matrice.size) { false }
+
+    for (l in firstLine.indices) {
         for (i in 0 until matrice.size) {
             for (j in 0 until matrice[i].size) {
                 for (k in 0 until matrice[i][j].size) {
                     if (matrice[i][j][k] == firstLine[l]) {
                         matricePogadjalica[i][j][k] = true;
                         if (provjeriRed(matricePogadjalica, i, j) != -1) {
-                            rezultat = saberiMatricu(matricePogadjalica, i, matrice) * firstLine[l].toInt()
-                            println(rezultat)
-                            return;
+                            zavrseneList[i] = true;
+                            if (zavrseneList.all { it }) {
+                                rezultat = saberiMatricu(matricePogadjalica, i, matrice) * firstLine[l].toInt()
+                                println("Part 2 $rezultat")
+                                return;
+                            }
                         }
                     }
                 }
@@ -57,7 +81,6 @@ fun main(args: Array<String>) {
         }
     }
 
-    println(rezultat);
 }
 
 fun saberiMatricu(
@@ -78,8 +101,14 @@ fun saberiMatricu(
 
 fun provjeriRed(matricePogadjalica: MutableList<MutableList<MutableList<Boolean>>>, i: Int, j: Int): Int {
     var kolona = true
-    for(j2 in 0 until matricePogadjalica[i].size) {
-        if(!matricePogadjalica[i][j2][0]) kolona = false;
+    for (k2 in 0 until 5) {
+        kolona = true
+        for (j2 in 0 until 5) {
+            if (!matricePogadjalica[i][j2][k2]) {
+                kolona = false
+            }
+        }
+        if (kolona) return k2
     }
     if (matricePogadjalica[i][j] == mutableListOf(true, true, true, true, true) || kolona) return i;
     return -1;
