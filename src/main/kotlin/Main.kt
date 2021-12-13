@@ -1,116 +1,98 @@
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
+import kotlin.math.abs
 
 fun main(args: Array<String>) {
     //Open local file
     val file = File("input.txt")
     val inputStream = file.inputStream()
     val reader = BufferedReader(InputStreamReader(inputStream))
-    val firstLine = reader.readLine().split(",")
     var line = reader.readLine()
 
-    var matrica: MutableList<List<String>> = mutableListOf()
+    //Create a list of zero-based coordinates
+    var matrica: MutableList<MutableList<Int>> = mutableListOf()
 
-    val matrice: MutableList<MutableList<List<String>>> = mutableListOf()
-    var first = true
     while (line != null) {
-        if (line.isNotEmpty()) {
-            val secondLine = line.split(" ")
-            matrica.add(secondLine.filter { it.isNotEmpty() })
-        } else if (!first) {
-            matrice.add(matrica)
-            matrica = mutableListOf()
-        } else first = false;
+        val row = line.replace(Regex("\\D"), " ")
+            .split(Regex(" "))
+            .toMutableList()
+            .filter { it.isNotEmpty() }
+            .map { it.toInt() }
+
+        matrica = provjeriVelicinuMatrice(matrica, row)
+        val lowerX = if (row[0] > row[2]) row[2] else row[0]
+        val upperX = if (row[0] > row[2]) row[0] else row[2]
+        val lowerY = if (row[1] > row[3]) row[3] else row[1]
+        val upperY = if (row[1] > row[3]) row[1] else row[3]
+
+        if (row[0] == row[2]) for (i in lowerY..upperY) matrica[i][row[0]] += 1
+        else if (row[1] == row[3]) for (i in lowerX..upperX) matrica[row[1]][i] += 1
+        //PART 2
+        else if (abs(row[0] - row[2]) == abs(row[1] - row[3])) {
+
+            if(row[0] < row[2] && row[1] < row[3])
+                for (i in 0.. abs(lowerX - upperX)) matrica[lowerY + i][lowerX + i] += 1
+            else if (row[0] > row[2] && row[1] > row[3])
+                for (i in abs(lowerX - upperX) downTo 0) matrica[lowerY + i][lowerX + i] += 1
+            else if (row[0] < row[2] && row[1] > row[3])
+                for (i in 0.. abs(lowerX - upperX)) matrica[upperY - i][lowerX + i] += 1
+            else if (row[0] > row[2] && row[1] < row[3])
+                for (i in abs(lowerX - upperX) downTo 0) matrica[upperY - i][lowerX + i] += 1
+        }
+        /////////END PART 2
+
         line = reader.readLine()
     }
-    if (matrica.isNotEmpty()) matrice.add(matrica)
 
-
-    val matricePogadjalica: MutableList<MutableList<MutableList<Boolean>>> = mutableListOf()
-    for (i in 0 until matrice.size) {
-        val pogadjalica = mutableListOf(
-            mutableListOf(false, false, false, false, false),
-            mutableListOf(false, false, false, false, false),
-            mutableListOf(false, false, false, false, false),
-            mutableListOf(false, false, false, false, false),
-            mutableListOf(false, false, false, false, false)
-        )
-        matricePogadjalica.add(pogadjalica);
-    }
-
-    // Part 1
-    var rezultat = 0;
-//    for (l in 0 until firstLine.size) {
-//        for (i in 0 until matrice.size) {
-//            for (j in 0 until matrice[i].size) {
-//                for (k in 0 until matrice[i][j].size) {
-//                    if (matrice[i][j][k] == firstLine[l]) {
-//                        matricePogadjalica[i][j][k] = true;
-//                        if (provjeriRed(matricePogadjalica, i, j) != -1) {
-//                            rezultat = saberiMatricu(matricePogadjalica, i, matrice) * firstLine[l].toInt()
-//                            println("Part 1 $rezultat")
-//                            return;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-    //Part 2
-    val zavrseneList: MutableList<Boolean> = MutableList(matrice.size) { false }
-
-    for (l in firstLine.indices) {
-        for (i in 0 until matrice.size) {
-            for (j in 0 until matrice[i].size) {
-                for (k in 0 until matrice[i][j].size) {
-                    if (matrice[i][j][k] == firstLine[l]) {
-                        matricePogadjalica[i][j][k] = true;
-                        if (provjeriRed(matricePogadjalica, i, j) != -1) {
-                            zavrseneList[i] = true;
-                            if (zavrseneList.all { it }) {
-                                rezultat = saberiMatricu(matricePogadjalica, i, matrice) * firstLine[l].toInt()
-                                println("Part 2 $rezultat")
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
+    var max = 0
+    for (i in 0 until matrica.size) {
+        for (j in 0 until matrica[i].size) {
+            if (matrica[i][j] >= 2) max++
         }
     }
 
+    println(max)
 }
 
-fun saberiMatricu(
-    matricePogadjalica: MutableList<MutableList<MutableList<Boolean>>>,
-    i: Int,
-    matrice: MutableList<MutableList<List<String>>>
-): Int {
-    var rezultat = 0;
-    for (j2 in 0 until matrice[i].size) {
-        for (k2 in 0 until matrice[i][j2].size) {
-            if (!matricePogadjalica[i][j2][k2]) {
-                rezultat += matrice[i][j2][k2].toInt()
+fun provjeriVelicinuMatrice(matrica: MutableList<MutableList<Int>>, row: List<Int>): MutableList<MutableList<Int>> {
+    if (matrica.size - 1 < row[1]) {
+        //Add new row
+        for (i in matrica.size..row[1]) {
+            matrica.add(mutableListOf())
+            for (j in 0..matrica[0].size - 1) {
+                matrica[i].add(0)
+            }
+        }
+
+    }
+    if (matrica.size - 1 < row[3]) {
+        //Add new row
+        for (i in matrica.size..row[3]) {
+            matrica.add(mutableListOf())
+            for (j in 0..matrica[0].size - 1) {
+                matrica.add(mutableListOf(0))
             }
         }
     }
-    return rezultat;
-}
-
-fun provjeriRed(matricePogadjalica: MutableList<MutableList<MutableList<Boolean>>>, i: Int, j: Int): Int {
-    var kolona = true
-    for (k2 in 0 until 5) {
-        kolona = true
-        for (j2 in 0 until 5) {
-            if (!matricePogadjalica[i][j2][k2]) {
-                kolona = false
+    //Check if matrica size is less than row[1]
+    if (matrica[0].size - 1 < row[0]) {
+        //Add new column
+        for (i in 0..matrica.size - 1) {
+            for (j in matrica[i].size..row[0]) {
+                matrica[i].add(0)
             }
         }
-        if (kolona) return k2
     }
-    if (matricePogadjalica[i][j] == mutableListOf(true, true, true, true, true) || kolona) return i;
-    return -1;
+    if (matrica[0].size - 1< row[2]) {
+        //Add new column
+        for (i in 0..matrica.size - 1) {
+            for (j in matrica[i].size..row[2]) {
+                matrica[i].add(0)
+            }
+        }
+    }
+    return matrica
 }
+
 
