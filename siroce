@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Usage: ./siroce <branch_name> 
+
+git checkout --orphan "$1"
+git rm --cached -r .
+git commit --allow-empty -m "Starting commit of $1" 
