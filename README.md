@@ -14,3 +14,7 @@ https://adventofcode.com/2021
 | 8  | Kotlin  | [Day 8](https://github.com/NedimBadzak/adventofcode/tree/day8) | 
 | 9  | Kotlin  | [Day 9](https://github.com/NedimBadzak/adventofcode/tree/day9) | 
 | 10  | Kotlin  | [Day 10](https://github.com/NedimBadzak/adventofcode/tree/day10) | 
+| 11  | Kotlin  | [Day 11](https://github.com/NedimBadzak/adventofcode/tree/day11) | 
+| 13  | Kotlin  | [Day 13](https://github.com/NedimBadzak/adventofcode/tree/day13) | 
+| 14  | Kotlin  | [Day 14](https://github.com/NedimBadzak/adventofcode/tree/day14) | 
+| 17  | Kotlin  | [Day 17](https://github.com/NedimBadzak/adventofcode/tree/day17) | 
